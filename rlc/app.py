@@ -12,6 +12,7 @@ import json
 import matplotlib.font_manager as fm
 
 # 解决Linux/Streamlit云端中文乱码
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'WenQuanYi Zen Hei', 'SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 try:
     # 尝试加载支持中文的字体
@@ -529,53 +530,62 @@ with st.sidebar:
         st.success("✅ API密钥已更新")
         st.session_state.api_status = "not_checked"
         st.rerun()
+
+
+
     
     st.markdown("---")
     st.subheader("🎯 Endpoint配置")
     st.info("💡 需要在火山引擎控制台创建推理接入点获取endpoint")
-    
-    # 快速选择常用模型
+
+# ===================== 修复：云端初始化状态 =====================
+    if "use_custom_endpoint" not in st.session_state:
+        st.session_state.use_custom_endpoint = False  # 默认：使用预设列表
+
+# 正确绑定，云端本地一致
     use_preset = st.checkbox("使用预设endpoint", value=not st.session_state.use_custom_endpoint)
     st.session_state.use_custom_endpoint = not use_preset
-    
+
     if use_preset:
         preset_options = [m["label"] for m in COMMON_ENDPOINTS]
         preset_names = [m["name"] for m in COMMON_ENDPOINTS]
-        
+    
         try:
             current_idx = preset_names.index(st.session_state.endpoint) if st.session_state.endpoint in preset_names else 0
         except:
             current_idx = 0
-        
+    
         selected_label = st.selectbox(
             "选择预设endpoint",
             preset_options,
             index=current_idx,
             help="选择预设的豆包endpoint"
         )
-        
+    
         selected_name = [m["name"] for m in COMMON_ENDPOINTS if m["label"] == selected_label][0]
-        
+    
         if selected_name != st.session_state.endpoint:
             st.session_state.endpoint = selected_name
             st.session_state.api_status = "not_checked"
             st.rerun()
     else:
-        # 自定义endpoint输入
         custom_endpoint = st.text_input(
             "输入您的推理接入点Endpoint",
             value=st.session_state.endpoint if st.session_state.endpoint else "",
             placeholder="例如: ep-20240101000000-abcde",
             key="endpoint_input"
         )
-        
+    
         if custom_endpoint and custom_endpoint != st.session_state.endpoint:
             st.session_state.endpoint = custom_endpoint.strip()
             st.session_state.api_status = "not_checked"
             st.rerun()
-    
+
     if st.session_state.endpoint:
         st.success(f"✅ 当前Endpoint: {st.session_state.endpoint}")
+
+
+        
     else:
         st.warning("⚠️ 请配置Endpoint")
     
@@ -1043,3 +1053,4 @@ if st.session_state.experiment_step >= 5 and st.session_state.fitting_results is
                 del st.session_state[key]
         st.session_state.experiment_step = 1
         st.rerun()
+
