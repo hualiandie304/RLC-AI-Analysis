@@ -7,21 +7,14 @@ import matplotlib
 import requests
 import json
 
-# ===================== 基础配置 =====================
 
-import matplotlib.font_manager as fm
-
-# 解决Linux/Streamlit云端中文乱码
-plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'WenQuanYi Zen Hei', 'SimHei']
+# ==============================================
+# 🔴 修复：图表中文乱码（最终稳定版）
+# ==============================================
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
-try:
-    # 尝试加载支持中文的字体
-    plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei', 'DejaVu Sans', 'SimHei', 'Arial Unicode MS']
-except:
-    plt.rcParams['font.sans-serif'] = ['DejaVu Sans']
+# ==============================================
 
-    
-matplotlib.rcParams['axes.unicode_minus'] = False
 st.set_page_config(page_title="RLC串联谐振实验分析系统", layout="wide")
 
 # ===================== 全局变量 =====================
@@ -65,7 +58,7 @@ if 'api_status_message' not in st.session_state:
 if 'endpoint' not in st.session_state:
     st.session_state.endpoint = ""
 if 'use_custom_endpoint' not in st.session_state:
-    st.session_state.use_custom_endpoint = True
+    st.session_state.use_custom_endpoint = False  # 🔴 修复：默认显示预设列表
 if 'api_format' not in st.session_state:
     st.session_state.api_format = "chat"  # "chat" or "responses"
 if 'timeout' not in st.session_state:
@@ -539,10 +532,6 @@ with st.sidebar:
     st.info("💡 需要在火山引擎控制台创建推理接入点获取endpoint")
 
 # ===================== 修复：云端初始化状态 =====================
-    if "use_custom_endpoint" not in st.session_state:
-        st.session_state.use_custom_endpoint = False  # 默认：使用预设列表
-
-# 正确绑定，云端本地一致
     use_preset = st.checkbox("使用预设endpoint", value=not st.session_state.use_custom_endpoint)
     st.session_state.use_custom_endpoint = not use_preset
 
@@ -755,13 +744,13 @@ if st.session_state.experiment_step >= 1:
         
         fig, ax = plt.subplots(figsize=(10, 4))
         if current_unit == "mA":
-            ax.scatter(f_data, I_data*1000, c="blue", label="实验数据")
-            ax.set_ylabel("电流 (mA)")
+            ax.scatter(f_data, I_data*1000, c="blue", label="Experiment Data")
+            ax.set_ylabel("Current (mA)")
         else:
-            ax.scatter(f_data, I_data, c="blue", label="实验数据")
-            ax.set_ylabel("电流 (A)")
-        ax.set_xlabel("频率 (Hz)")
-        ax.set_title("数据曲线")
+            ax.scatter(f_data, I_data, c="blue", label="Experiment Data")
+            ax.set_ylabel("Current (A)")
+        ax.set_xlabel("Frequency (Hz)")
+        ax.set_title("Data Curve")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
@@ -912,13 +901,13 @@ if st.session_state.experiment_step >= 3 and ("存在异常：是" in (st.sessio
             st.success("✅ 修正后数据上传成功！")
             fig, ax = plt.subplots(figsize=(10, 4))
             if current_unit == "mA":
-                ax.scatter(f_data, I_data*1000, c="green", label="修正后数据")
-                ax.set_ylabel("电流 (mA)")
+                ax.scatter(f_data, I_data*1000, c="green", label="Corrected Data")
+                ax.set_ylabel("Current (mA)")
             else:
-                ax.scatter(f_data, I_data, c="green", label="修正后数据")
-                ax.set_ylabel("电流 (A)")
-            ax.set_xlabel("频率 (Hz)")
-            ax.set_title("修正后数据曲线")
+                ax.scatter(f_data, I_data, c="green", label="Corrected Data")
+                ax.set_ylabel("Current (A)")
+            ax.set_xlabel("Frequency (Hz)")
+            ax.set_title("Corrected Data Curve")
             ax.legend()
             ax.grid(True)
             st.pyplot(fig)
@@ -985,18 +974,18 @@ if st.session_state.experiment_step >= 4 and st.session_state.f_data is not None
         st.subheader("谐振曲线")
         fig, ax = plt.subplots(figsize=(10, 5))
         if current_unit == "mA":
-            ax.scatter(f_clean, I_clean*1000, c="blue", label="实验数据")
-            ax.plot(f_fit, I_fit*1000, "g-", label="拟合曲线")
-            ax.plot(f0_fit, I0*1000, "ro", label="谐振点")
-            ax.plot([f1, f2], [I_half*1000, I_half*1000], "ms", label="半功率点")
-            ax.set_ylabel("电流 (mA)")
+            ax.scatter(f_clean, I_clean*1000, c="blue", label="Experiment Data")
+            ax.plot(f_fit, I_fit*1000, "g-", label="Fitting Curve")
+            ax.plot(f0_fit, I0*1000, "ro", label="Resonance Point")
+            ax.plot([f1, f2], [I_half*1000, I_half*1000], "ms", label="Half-Power Points")
+            ax.set_ylabel("Current (mA)")
         else:
-            ax.scatter(f_clean, I_clean, c="blue", label="实验数据")
-            ax.plot(f_fit, I_fit, "g-", label="拟合曲线")
-            ax.plot(f0_fit, I0, "ro", label="谐振点")
-            ax.plot([f1, f2], [I_half, I_half], "ms", label="半功率点")
-            ax.set_ylabel("电流 (A)")
-        ax.set_xlabel("频率 (Hz)")
+            ax.scatter(f_clean, I_clean, c="blue", label="Experiment Data")
+            ax.plot(f_fit, I_fit, "g-", label="Fitting Curve")
+            ax.plot(f0_fit, I0, "ro", label="Resonance Point")
+            ax.plot([f1, f2], [I_half, I_half], "ms", label="Half-Power Points")
+            ax.set_ylabel("Current (A)")
+        ax.set_xlabel("Frequency (Hz)")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
@@ -1053,4 +1042,3 @@ if st.session_state.experiment_step >= 5 and st.session_state.fitting_results is
                 del st.session_state[key]
         st.session_state.experiment_step = 1
         st.rerun()
-
