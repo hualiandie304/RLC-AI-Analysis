@@ -1152,7 +1152,7 @@ with tab2:
     try:
         f1_ideal = t_f0 - t_BW / 2
         f2_ideal = t_f0 + t_BW / 2
-        ax.axhline(y=I_half, color="m", linestyle=":", alpha=0.7, label=f"半功率点 I={I_half:.4f} A")
+        ax.axhline(y=I_half, color="m", linestyle=":", alpha=0.7, label=f"Half-Power I={I_half:.4f} A")
         ax.axvline(x=f1_ideal, color="m", linestyle=":", alpha=0.5)
         ax.axvline(x=f2_ideal, color="m", linestyle=":", alpha=0.5)
     except:
