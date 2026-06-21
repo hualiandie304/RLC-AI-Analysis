@@ -10,7 +10,6 @@ import io
 from datetime import datetime
 
 # ===================== 基础配置 =====================
-matplotlib.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei']
 matplotlib.rcParams['axes.unicode_minus'] = False
 st.set_page_config(page_title="RLC串联谐振实验AI智能辅助系统", layout="wide")
 
@@ -1145,9 +1144,9 @@ with tab2:
     # 绘制理论曲线
     st.subheader("📈 预测谐振曲线")
     fig, ax = plt.subplots(figsize=(12, 5))
-    ax.plot(t_freq, t_I, "b-", linewidth=2, label="理论预测曲线")
-    # 标注谐振点
-    ax.axvline(x=t_f0, color="r", linestyle="--", alpha=0.7, label=f"谐振频率 f0={t_f0:.0f} Hz")
+    ax.plot(t_freq, t_I, "b-", linewidth=2, label="Theoretical Prediction")
+    # Mark resonance point
+    ax.axvline(x=t_f0, color="r", linestyle="--", alpha=0.7, label=f"Resonance Frequency f0={t_f0:.0f} Hz")
     # 标注半功率点
     I_half = t_I0 / np.sqrt(2)
     try:
@@ -1158,9 +1157,9 @@ with tab2:
         ax.axvline(x=f2_ideal, color="m", linestyle=":", alpha=0.5)
     except:
         pass
-    ax.set_xlabel("频率 (Hz)")
-    ax.set_ylabel("电流 (A)")
-    ax.set_title("RLC串联谐振理论预测曲线")
+    ax.set_xlabel("Frequency (Hz)")
+    ax.set_ylabel("Current (A)")
+    ax.set_title("RLC Series Resonance - Theoretical Prediction")
     ax.grid(True, alpha=0.3)
     ax.legend()
     st.pyplot(fig)
@@ -1189,15 +1188,15 @@ with tab2:
         st.markdown("---")
         st.subheader("📊 预测曲线 vs 实测数据对比")
         fig2, ax2 = plt.subplots(figsize=(12, 5))
-        # 理论曲线
+        # Theoretical curve
         unit = st.session_state.get('current_unit', 'A')
         scale = 1000 if unit == 'mA' else 1
-        ax2.plot(t_freq, t_I * scale, "b-", linewidth=2, alpha=0.7, label="理论预测曲线")
-        # 实测数据
-        ax2.scatter(st.session_state.f_data, st.session_state.I_data * scale, c="red", s=30, marker="o", label="实测数据", zorder=5)
-        ax2.set_xlabel("频率 (Hz)")
-        ax2.set_ylabel(f"电流 ({unit})")
-        ax2.set_title("理论预测 vs 实测数据对比")
+        ax2.plot(t_freq, t_I * scale, "b-", linewidth=2, alpha=0.7, label="Theoretical Prediction")
+        # Measured data
+        ax2.scatter(st.session_state.f_data, st.session_state.I_data * scale, c="red", s=30, marker="o", label="Measured Data", zorder=5)
+        ax2.set_xlabel("Frequency (Hz)")
+        ax2.set_ylabel(f"Current ({unit})")
+        ax2.set_title("Theoretical Prediction vs Measured Data")
         ax2.grid(True, alpha=0.3)
         ax2.legend()
         st.pyplot(fig2)
@@ -1345,11 +1344,11 @@ with tab3:
         unit = st.session_state.get('current_unit', 'A')
         scale = 1000 if unit == 'mA' else 1
         fig, ax = plt.subplots(figsize=(12, 4))
-        ax.scatter(f_data, I_data * scale, c="blue", s=40, label="实验数据")
+        ax.scatter(f_data, I_data * scale, c="blue", s=40, label="Experimental Data")
         ax.plot(f_data, I_data * scale, "b-", alpha=0.3)
-        ax.set_xlabel("频率 (Hz)")
-        ax.set_ylabel(f"电流 ({unit})")
-        ax.set_title("实验数据曲线")
+        ax.set_xlabel("Frequency (Hz)")
+        ax.set_ylabel(f"Current ({unit})")
+        ax.set_title("Experimental Data Curve")
         ax.legend()
         ax.grid(True, alpha=0.3)
         st.pyplot(fig)
@@ -1450,13 +1449,13 @@ with tab3:
 
                 # 绘制拟合图
                 fig, ax = plt.subplots(figsize=(12, 5))
-                ax.scatter(f_data, I_data * scale, c="blue", s=50, label="实验数据", zorder=5)
-                ax.plot(f_fit, I_fit * scale, "g-", linewidth=2, label="拟合曲线")
-                ax.plot([f0_fit], [I0 * scale], "ro", markersize=12, label=f"谐振点 ({f0_fit:.0f} Hz)")
-                ax.plot([f1, f2], [I_half * scale, I_half * scale], "ms", markersize=10, label=f"半功率点 ({f1:.0f}, {f2:.0f} Hz)")
-                ax.set_xlabel("频率 (Hz)")
-                ax.set_ylabel(f"电流 ({unit})")
-                ax.set_title("RLC串联谐振拟合分析")
+                ax.scatter(f_data, I_data * scale, c="blue", s=50, label="Experimental Data", zorder=5)
+                ax.plot(f_fit, I_fit * scale, "g-", linewidth=2, label="Fitted Curve")
+                ax.plot([f0_fit], [I0 * scale], "ro", markersize=12, label=f"Resonance Point ({f0_fit:.0f} Hz)")
+                ax.plot([f1, f2], [I_half * scale, I_half * scale], "ms", markersize=10, label=f"Half-Power Points ({f1:.0f}, {f2:.0f} Hz)")
+                ax.set_xlabel("Frequency (Hz)")
+                ax.set_ylabel(f"Current ({unit})")
+                ax.set_title("RLC Series Resonance - Fitting Analysis")
                 ax.grid(True, alpha=0.3)
                 ax.legend()
                 st.pyplot(fig)
@@ -1586,26 +1585,26 @@ with tab4:
     unit = st.session_state.get('current_unit', 'A')
     scale = 1000 if unit == 'mA' else 1
     fig, ax = plt.subplots(figsize=(12, 5))
-    # 理论曲线
-    ax.plot(theory_freq, theory_I * scale, "b-", linewidth=2, alpha=0.6, label="理论谐振曲线 (物理基准)")
-    # 干净的历史实测数据
+    # Theoretical curve
+    ax.plot(theory_freq, theory_I * scale, "b-", linewidth=2, alpha=0.6, label="Theoretical Resonance Curve (Physical Reference)")
+    # Clean historical measured data
     if has_hist_data and clean_freq is not None and len(clean_freq) >= 2:
-        ax.scatter(clean_freq, clean_current * scale, c="green", s=50, marker="o", alpha=0.8, label=f"正常历史数据 ({len(clean_freq)}点)", zorder=3)
-    # 被过滤的异常点
+        ax.scatter(clean_freq, clean_current * scale, c="green", s=50, marker="o", alpha=0.8, label=f"Normal Historical Data ({len(clean_freq)} points)", zorder=3)
+    # Filtered outliers
     if has_hist_data and outlier_mask is not None and np.sum(outlier_mask) > 0:
         outlier_freqs = st.session_state.f_data[outlier_mask]
         outlier_values = st.session_state.I_data[outlier_mask]
-        ax.scatter(outlier_freqs, outlier_values * scale, c="orange", s=80, marker="x", linewidths=2, label=f"被排除的异常点 ({int(np.sum(outlier_mask))}个)", zorder=4)
+        ax.scatter(outlier_freqs, outlier_values * scale, c="orange", s=80, marker="x", linewidths=2, label=f"Excluded Outliers ({int(np.sum(outlier_mask))})", zorder=4)
     # 原始历史数据（浅色）
     if has_hist_data:
-        ax.scatter(st.session_state.f_data, st.session_state.I_data * scale, c="gray", s=20, marker=".", alpha=0.3, label="原始历史数据（含异常）", zorder=2)
-    # 当前待检测点
+        ax.scatter(st.session_state.f_data, st.session_state.I_data * scale, c="gray", s=20, marker=".", alpha=0.3, label="Raw Historical Data (including anomalies)", zorder=2)
+    # Current test point
     ax.axvline(x=check_freq, color="purple", linestyle=":", linewidth=1.5, alpha=0.7, zorder=1)
-    ax.scatter([check_freq], [check_current_si * scale], c="red", s=200, marker="*", linewidths=2, edgecolors="black", label="当前待检测数据点", zorder=10)
+    ax.scatter([check_freq], [check_current_si * scale], c="red", s=200, marker="*", linewidths=2, edgecolors="black", label="Current Test Point", zorder=10)
     ax.annotate(f"({check_freq:.0f}Hz, {check_current_si*scale:.4f})", (check_freq, check_current_si * scale), textcoords="offset points", xytext=(15, 15), fontsize=9, fontweight="bold", color="red")
-    ax.set_xlabel("频率 (Hz)")
-    ax.set_ylabel(f"电流 ({unit})")
-    ax.set_title("理论曲线 vs 历史数据 vs 当前待检测点（红色星号）")
+    ax.set_xlabel("Frequency (Hz)")
+    ax.set_ylabel(f"Current ({unit})")
+    ax.set_title("Theoretical Curve vs Historical Data vs Current Point (Red Star)")
     ax.grid(True, alpha=0.3)
     ax.legend(fontsize=9, loc="upper right")
     st.pyplot(fig)
